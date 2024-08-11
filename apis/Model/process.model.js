@@ -70,7 +70,7 @@ const ProcessSchema = mongoose.Schema(
             }
         },
 
-        ET: {
+        EFT: {
             type: Date
         }
 
