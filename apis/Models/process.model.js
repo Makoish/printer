@@ -44,8 +44,23 @@ const ProcessSchema = mongoose.Schema(
             required: true
         },
 
+        papersCount: { // for search query
+            type: Number
+        },
+
         totalPrintingCost: {
             type: Number,
+        },
+
+        status: {
+            type: String,
+            default: "RUNNING",
+            enum: ["RUNNING", "FINISHED"]
+        },
+
+        machinesNO:{
+            type: Number,
+            required: true
         },
 
         profit: {
@@ -63,14 +78,9 @@ const ProcessSchema = mongoose.Schema(
 
         endedAt: {
             type: Date,
-            default: () => {
-              const currentDate = new Date();
-              currentDate.setHours(currentDate.getHours() + 3);
-              return currentDate;
-            }
         },
 
-        EFT: {
+        EFT: {   //Estimated Finish Time
             type: Date
         }
 
@@ -79,4 +89,5 @@ const ProcessSchema = mongoose.Schema(
 
 
 
-module.exports = ProcessSchema
+const Process = mongoose.model("Process", ProcessSchema);
+module.exports = Process
