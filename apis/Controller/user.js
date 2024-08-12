@@ -212,3 +212,47 @@ exports.getAllUsers = async (req, res) => {
     }
   
 };
+
+
+
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const id = req.params.id
+        const user = await User.find(id)
+        if (!user)
+            throw new Error("User doesn't exist")
+
+        await User.findByIdAndDelete(id)
+        
+
+        return res.status(200).json({"message": "user deleted"}) 
+
+        
+
+       
+    } catch(err){
+        res.status(400).json({"message": err.message});
+    }
+  
+};
+
+
+exports.editUser = async (req, res) => {
+    try {
+
+        const user = await User.findByIdAndUpdate(id, req.body)
+        return res.status(200).json({"message": "user updated"}) 
+
+        
+
+       
+    } catch(err){
+        res.status(400).json({"message": err.message});
+    }
+  
+};
+
+
+
+

@@ -120,6 +120,7 @@ exports.getAllProcessesStaff = async (req, res) => {
         const start = parseInt(req.query.start) || 0
         const end = parseInt(req.query.end) || 100
         const query = {}
+        const populateFilter = {}
      
 
         
@@ -132,6 +133,8 @@ exports.getAllProcessesStaff = async (req, res) => {
                 {"staff": {$in: users.map(obj => obj.id)}}
             ]
         }
+
+        query.status = "RUNNING"
 
        
         const operations = await Process.find(query)
