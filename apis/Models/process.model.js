@@ -40,8 +40,7 @@ const ProcessSchema = mongoose.Schema(
         },
 
         paidPrice: {
-            type: Number,
-            required: true
+            type: Number
         },
 
         papersCount: { // for search query

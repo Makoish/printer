@@ -29,14 +29,16 @@ function filterTransactionsByTime(filter) {
 exports.addProcess = async (req, res) =>{
     try {
         const operation = await Process.create(req.body)
-        operation.totalPrintingCost = req.body.pricePerPaper * req.body.papersPerUnit * req.body.unitsNO
-        operation.profit = req.body.paidPrice - operation.totalPrintingCost
+        operation.paidPrice = req.body.pricePerPaper * req.body.papersPerUnit * req.body.unitsNO
+        operation.totalPrintingCost = Number(process.env.pricePerPaperActual) * req.body.papersPerUnit * req.body.unitsNO
+        operation.profit = operation.paidPrice - operation.totalPrintingCost
+        operation.papersCount = req.body.papersPerUnit * req.body.unitsNO
         const operationSeconds = (req.body.papersPerUnit * req.body.unitsNO) / (Number(process.env.rate) * operation.machinesNO)
         const EFT = new Date(operation.startedAt.getTime() + operationSeconds * 1000)
         operation.EFT = EFT
         operation.papersCount = req.body.papersPerUnit * req.body.unitsNO
         await operation.save()
-        return res.status(200).json({"message": "operation added"})
+        return res.status(200).json({"message": "operation added", "price": operation.paidPrice, "papersUsed": operation.papersCount, "EFT": operation.EFT})
         
     } catch (err) {
         res.status(400).json({"message": err.message})
@@ -54,12 +56,10 @@ exports.endProcess = async (req, res) =>{
         
         const operationID = req.body.processID
         const operation = await Process.findById(operationID)
-        finishDate = new Date()
-        finishDate.setHours(finishDate.getHours() + 3)
-        operation.endedAt = finishDate
+        operation.endedAt = new Date()
         operation.status = "FINISHED"
         await operation.save()
-        return res.status(200).json({"message": "operation added"})
+        return res.status(200).json({"message": "operation ended"})
         
     } catch (err) {
         res.status(400).json({"message": err.message})
@@ -95,11 +95,11 @@ exports.getAllProcesses = async (req, res) => {
         }
 
        
-        const operations = await Process.find(query)
+        const operations = await Process.find(query).select("-__v")
         for (let i = 0; i < operations.length; i++){
-            operation.startedAt.setHours(operation.startedAt.getHours() + 3)
-            operation.endedAt ? operation.endedAt.setHours(operation.endedAt.getHours()+3 ): null;
-            operation.save()
+            operations[i].startedAt.setHours(operations[i].startedAt.getHours() + 3)
+            operations[i].endedAt ? operations[i].endedAt.setHours(operations[i].endedAt.getHours()+3 ): null;
+            operations[i].save()
         }
 
         
@@ -137,11 +137,11 @@ exports.getAllProcessesStaff = async (req, res) => {
         query.status = "RUNNING"
 
        
-        const operations = await Process.find(query)
+        const operations = await Process.find(query).select("-__v")
         for (let i = 0; i < operations.length; i++){
-            operation.startedAt.setHours(operation.startedAt.getHours() + 3)
-            operation.endedAt ? operation.endedAt.setHours(operation.endedAt.getHours()+3 ): null;
-            operation.save()
+            operations[i].startedAt.setHours(operations[i].startedAt.getHours() + 3)
+            operations[i].endedAt ? operations[i].endedAt.setHours(operations[i].endedAt.getHours()+3 ): null;
+            operations[i].save()
         }
 
         
@@ -161,7 +161,7 @@ exports.getProcess = async (req, res) => {
     try {
         const id = req.params.id
      
-        const operation = await Process.findById(id)
+        const operation = await Process.findById(id).select("-__v")
         
         if (!operation) throw new Error ("operation doesn't exist");
 

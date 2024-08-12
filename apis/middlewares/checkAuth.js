@@ -53,7 +53,7 @@ exports.adminAuth = async (req, res, next) => {
     const decoded_token = jwt.verify(token, process.env.tokenSecret)
 
     const id = decoded_token.id
-
+   
     const user = await User.findById(id);
 
     if (user.isAdmin === false){
@@ -98,6 +98,8 @@ exports.staffAuth = async (req, res, next) => {
     const id = decoded_token.id
 
     const user = await User.findById(id);
+    
+
 
     if (user.isAdmin === false && user.isStaff === false){
         throw new Error("Unauthorized");

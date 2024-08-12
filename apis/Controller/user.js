@@ -13,8 +13,8 @@ exports.addUser = async (req, res) => {
 
         if (user)
             throw new Error("User exists")
-        
-        req.body.password = await bcrypt.hash(req.body.password, Number(operation.env.hashRounds));
+        if (req.body.password)
+            req.body.password = await bcrypt.hash(req.body.password, Number(process.env.hashRounds));
         const _ = await User.create(req.body)
         return res.status(201).json({"message": "User created"})
 
@@ -200,7 +200,7 @@ exports.getAllUsers = async (req, res) => {
         req.query.phoneNO ? query.phoneNO = req.query.phoneNO : null;
         req.query.fullName? query.fullName = new RegExp(req.query.fullName, 'i') : null;
 
-        const users = await User.find(query)
+        const users = await User.find(query).select('-password -__v');
 
         return res.status(200).json({"Users": users.slice(start, end)}) 
 
@@ -219,7 +219,7 @@ exports.getAllUsers = async (req, res) => {
 exports.deleteUser = async (req, res) => {
     try {
         const id = req.params.id
-        const user = await User.find(id)
+        const user = await User.findById(id)
         if (!user)
             throw new Error("User doesn't exist")
 
@@ -241,8 +241,32 @@ exports.deleteUser = async (req, res) => {
 exports.editUser = async (req, res) => {
     try {
 
-        const user = await User.findByIdAndUpdate(id, req.body)
+        const _id = req.params.id
+        const user = await User.findById(_id)
+        if (!user)
+            throw new Error("User doesn't exist")
+        await User.findByIdAndUpdate(_id, req.body)
         return res.status(200).json({"message": "user updated"}) 
+
+        
+
+       
+    } catch(err){
+        res.status(400).json({"message": err.message});
+    }
+  
+};
+
+
+
+exports.getUser = async (req, res) => {
+    try {
+        
+    
+        const _id = req.params.id
+        const user = await User.findById(_id).select('-password -__v');
+    
+        return res.status(200).json({"User": user}) 
 
         
 
