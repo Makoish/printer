@@ -1,0 +1,5 @@
+express
+Mongoose
+dotenv
+jsonwebtoken
+bcrypt
