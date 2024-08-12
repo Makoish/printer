@@ -69,11 +69,7 @@ const ProcessSchema = mongoose.Schema(
 
         startedAt: {
             type: Date,
-            default: () => {
-              const currentDate = new Date();
-              currentDate.setHours(currentDate.getHours() + 3);
-              return currentDate;
-            }
+            default: Date.now()
         },
 
         endedAt: {

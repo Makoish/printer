@@ -186,3 +186,29 @@ exports.dashboard = async (req, res) => {
 };
 
 
+
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        
+        const start = parseInt(req.query.start) || 0
+        const end = parseInt(req.query.end) || 100
+        const query = {}
+      
+
+        
+        req.query.phoneNO ? query.phoneNO = req.query.phoneNO : null;
+        req.query.fullName? query.fullName = new RegExp(req.query.fullName, 'i') : null;
+
+        const users = await User.find(query)
+
+        return res.status(200).json({"Users": users.slice(start, end)}) 
+
+        
+
+       
+    } catch(err){
+        res.status(400).json({"message": err.message});
+    }
+  
+};
