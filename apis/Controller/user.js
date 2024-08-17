@@ -129,7 +129,7 @@ exports.dashboard = async (req, res) => {
 
             {
                 $match: {
-                    status: "FINISHED" // Only include transactions with status "accepted"
+                    status: "FINISHED" 
                 }
             },
 
