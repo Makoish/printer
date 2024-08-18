@@ -96,10 +96,14 @@ exports.getAllProcesses = async (req, res) => {
 
        
         const operations = await Process.find(query).select("-__v")
-        for (let i = 0; i < operations.length; i++){
-            operations[i].startedAt.setHours(operations[i].startedAt.getHours() + 3)
-            operations[i].endedAt ? operations[i].endedAt.setHours(operations[i].endedAt.getHours()+3 ): null;
-            operations[i].save()
+        const operationsClone = operations.map(order => {
+            const orderObject = order.toObject();
+            return orderObject;
+          });
+        for (let i = 0; i < operationsClone.length; i++){
+            operationsClone[i].startedAt.setHours(operationsClone[i].startedAt.getHours() + 3)
+            operationsClone[i].endedAt ? operationsClone[i].endedAt.setHours(operationsClone[i].endedAt.getHours()+3 ): null;
+        
         }
 
         
@@ -107,7 +111,7 @@ exports.getAllProcesses = async (req, res) => {
 
 
 
-        return res.status(200).json({"processes": operations.slice(start, end)})
+        return res.status(200).json({"processes": operationsClone.slice(start, end)})
     } catch (err) {
         res.status(400).json({"message": err.message})
     }
@@ -138,10 +142,14 @@ exports.getAllProcessesStaff = async (req, res) => {
 
        
         const operations = await Process.find(query).select("-__v")
-        for (let i = 0; i < operations.length; i++){
-            operations[i].startedAt.setHours(operations[i].startedAt.getHours() + 3)
-            operations[i].endedAt ? operations[i].endedAt.setHours(operations[i].endedAt.getHours()+3 ): null;
-            operations[i].save()
+        const operationsClone = operations.map(order => {
+            const orderObject = order.toObject();
+            return orderObject;
+          });
+        for (let i = 0; i < operationsClone.length; i++){
+            operationsClone[i].startedAt.setHours(operationsClone[i].startedAt.getHours() + 3)
+            operationsClone[i].endedAt ? operationsClone[i].endedAt.setHours(operationsClone[i].endedAt.getHours()+3 ): null;
+            
         }
 
         
@@ -149,7 +157,7 @@ exports.getAllProcessesStaff = async (req, res) => {
 
 
 
-        return res.status(200).json({"processes": operations.slice(start, end)})
+        return res.status(200).json({"processes": operationsClone.slice(start, end)})
     } catch (err) {
         res.status(400).json({"message": err.message})
     }
@@ -162,13 +170,14 @@ exports.getProcess = async (req, res) => {
         const id = req.params.id
      
         const operation = await Process.findById(id).select("-__v")
+        const operationClone = operation.toObject();
         
         if (!operation) throw new Error ("operation doesn't exist");
 
 
-        operation.startedAt ? operation.startedAt.setHours(operation.startedAt.getHours() + 3): null;
-        operation.endedAt ? operation.endedAt.setHours(operation.endedAt.getHours()+3 ): null;
-        operation.save()
+        operationClone.startedAt ? operationClone.startedAt.setHours(operationClone.startedAt.getHours() + 3): null;
+        operationClone.endedAt ? operationClone.endedAt.setHours(operationClone.endedAt.getHours()+3 ): null;
+       
     
 
         
@@ -176,7 +185,7 @@ exports.getProcess = async (req, res) => {
 
 
 
-        return res.status(200).json({"processes": operation})
+        return res.status(200).json({"processes": operationClone})
     } catch (err) {
         res.status(400).json({"message": err.message})
     }
