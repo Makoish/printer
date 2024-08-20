@@ -36,9 +36,11 @@ exports.addProcess = async (req, res) =>{
         const operationSeconds = (req.body.papersPerUnit * req.body.unitsNO) / (Number(process.env.rate) * operation.machinesNO)
         const EFT = new Date(operation.startedAt.getTime() + operationSeconds * 1000)
         operation.EFT = EFT
+        let retEFT = new Date(operation.startedAt.getTime() + operationSeconds * 1000)
+        retEFT.setHours(retEFT.getHours()+3)
         operation.papersCount = req.body.papersPerUnit * req.body.unitsNO
         await operation.save()
-        return res.status(200).json({"message": "operation added", "price": operation.paidPrice, "papersUsed": operation.papersCount, "EFT": operation.EFT})
+        return res.status(200).json({"message": "operation added", "price": operation.paidPrice, "papersUsed": operation.papersCount, "EFT": retEFT})
         
     } catch (err) {
         res.status(400).json({"message": err.message})
