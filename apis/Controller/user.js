@@ -97,12 +97,6 @@ exports.dashboard = async (req, res) => {
         const topThreeCustomers = await Process.aggregate([
 
             {
-                $match: {
-                    status: "FINISHED" // Only include transactions with status "accepted"
-                }
-            },
-
-            {
                 $group: {
                     _id: "$customer",
                     totalProfit: { $sum: "$profit" }
@@ -126,12 +120,6 @@ exports.dashboard = async (req, res) => {
         
 
         const closureTypeRatio = await Process.aggregate([
-
-            {
-                $match: {
-                    status: "FINISHED" 
-                }
-            },
 
             {
                 $group: {
