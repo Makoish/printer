@@ -113,7 +113,7 @@ exports.dashboard = async (req, res) => {
             {
                 $sort: { totalProfit: -1 } 
             }
-        ]);
+        ]).limit(3);
 
 
 
