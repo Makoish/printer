@@ -36,7 +36,7 @@ const ProcessSchema = mongoose.Schema(
         typeOfClosure:{
             type: String,
             required: true,
-            enum: ["بشر", "تقعيب"]
+            enum: ["بشر", "تكعيب"]
         },
 
         paidPrice: {
