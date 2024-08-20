@@ -13,7 +13,7 @@ exports.Login = async (req, res) => {
         const phoneNO = req.body.phoneNO;
         const password = req.body.password;
 
-        const user = await User.findOne({"phoneNO": phoneNO})
+        const user = await User.findOne({"phoneNO": phoneNO}).select("isAdmin phoneNO fullName password")
 
         if (!user)
             throw new Error("user doesn't exist");
@@ -30,11 +30,15 @@ exports.Login = async (req, res) => {
             id: user._id,
             exp: Math.floor(Date.now() / 1000) + 86400
         }, process.env.tokenSecret);
-          
 
+        
+
+          
+        let retUser = user.toObject()
+        delete retUser["password"]
     
 
-        return res.status(200).json({"token": token});
+        return res.status(200).json({"token": token, "user": retUser});
         
 
     } catch(err){
