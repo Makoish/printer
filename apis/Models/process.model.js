@@ -8,13 +8,13 @@ const ProcessSchema = mongoose.Schema(
         
         customer: { 
             type: mongoose.Schema.ObjectId,
-            ref: "user",
+            ref: "User",
             required: true
         },
 
         staff: { // this is the who prints (الي شغال هناك)
             type: mongoose.Schema.ObjectId,
-            ref: "user",
+            ref: "User",
             required: true
         },
 

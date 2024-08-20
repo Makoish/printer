@@ -94,8 +94,9 @@ exports.getAllProcesses = async (req, res) => {
             ]
         }
 
-       
-        const operations = await Process.find(query).select("-__v")
+      
+        const operations = await Process.find(query).populate({"path": "customer", "select": "phoneNO fullName"}).populate({"path": "staff", "select": "fullName"}).select("-__v")
+        
         const operationsClone = operations.map(order => {
             const orderObject = order.toObject();
             return orderObject;
@@ -103,6 +104,7 @@ exports.getAllProcesses = async (req, res) => {
         for (let i = 0; i < operationsClone.length; i++){
             operationsClone[i].startedAt.setHours(operationsClone[i].startedAt.getHours() + 3)
             operationsClone[i].endedAt ? operationsClone[i].endedAt.setHours(operationsClone[i].endedAt.getHours()+3 ): null;
+            
         
         }
 
@@ -141,7 +143,7 @@ exports.getAllProcessesStaff = async (req, res) => {
         query.status = "RUNNING"
 
        
-        const operations = await Process.find(query).select("-__v")
+        const operations = await Process.find(query).populate({"path": "customer", "select": "phoneNO fullName"}).populate({"path": "staff", "select": "fullName"}).select("-__v")
         const operationsClone = operations.map(order => {
             const orderObject = order.toObject();
             return orderObject;
