@@ -28,17 +28,26 @@ function filterTransactionsByTime(filter) {
 
 exports.addProcess = async (req, res) =>{
     try {
-        const operation = await Process.create(req.body)
-        operation.paidPrice = req.body.pricePerPaper * req.body.papersPerUnit * req.body.unitsNO
-        operation.totalPrintingCost = Number(process.env.pricePerPaperActual) * req.body.papersPerUnit * req.body.unitsNO
+        const operation = await Process.create(req.body);
+        const PrintingType2Number = {"single": 1, "double": 2};
+        
+        const papersCount = Math.ceil(( req.body.papersPerUnit * req.body.unitsNO ) / PrintingType2Number[req.body.typeOfPrint]);
+        
+        operation.paidPrice = papersCount * req.body.pricePerPaper + req.body.unitsNO * req.body.costOfClosure;
+        
+        const inkPricePerPaper = (req.body.typeOfPrint === "single") ? Number(process.env.OneFaceInkPrice) : Number(process.env.DoubleFaceInkPrice)
+    
+        operation.totalPrintingCost =  papersCount *  ( Number(process.env.pricePerPaperActual) + inkPricePerPaper)
         operation.profit = operation.paidPrice - operation.totalPrintingCost
-        operation.papersCount = req.body.papersPerUnit * req.body.unitsNO
-        const operationSeconds = (req.body.papersPerUnit * req.body.unitsNO) / (Number(process.env.rate) * operation.machinesNO)
+        operation.papersCount = papersCount
+        const rate = req.body.typeOfPrint === "single" ? Number(process.env.OneFaceRate) : Number(process.env.DoubleFaceRate)
+     
+        const operationSeconds = papersCount / (rate * req.body.machinesNO)
+        
         const EFT = new Date(operation.startedAt.getTime() + operationSeconds * 1000)
         operation.EFT = EFT
         let retEFT = new Date(operation.startedAt.getTime() + operationSeconds * 1000)
         retEFT.setHours(retEFT.getHours()+3)
-        operation.papersCount = req.body.papersPerUnit * req.body.unitsNO
         await operation.save()
         return res.status(200).json({"message": "operation added", "price": operation.paidPrice, "papersUsed": operation.papersCount, "EFT": retEFT})
         
@@ -217,3 +226,5 @@ exports.deleteProcess = async (req, res) => {
         res.status(400).json({"message": err.message})
     }
 };
+
+

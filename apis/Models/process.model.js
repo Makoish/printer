@@ -40,6 +40,17 @@ const ProcessSchema = mongoose.Schema(
             enum: ["بشر", "تكعيب"]
         },
 
+        typeOfPrint: {
+            type: String,
+            required: true,
+            enum: ["single", "double"]
+        },
+
+        costOfClosure: {
+            type: String,
+            required: true
+        },
+
         paidPrice: {
             type: Number
         },
