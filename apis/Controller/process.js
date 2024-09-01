@@ -28,6 +28,7 @@ function filterTransactionsByTime(filter) {
 
 exports.addProcess = async (req, res) =>{
     try {
+        console.log(process.env.pricePerPaperActual)
         const operation = await Process.create(req.body);
         const PrintingType2Number = {"single": 1, "double": 2};
         
