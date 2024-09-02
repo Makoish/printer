@@ -123,7 +123,7 @@ exports.dashboard = async (req, res) => {
 
             {
                 $group: {
-                    _id: "$typeOfClosure",
+                    _id: "$typeOfClosure.Type",
                     ratio: { $sum: 1 }
                 }
             },
@@ -136,6 +136,7 @@ exports.dashboard = async (req, res) => {
             },
 
         ]);
+
 
         let cc = 0
         for (let i = 0; i<closureTypeRatio.length; i++){
