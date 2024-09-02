@@ -35,9 +35,14 @@ const ProcessSchema = mongoose.Schema(
         },
 
         typeOfClosure:{
-            type: String,
+            type: {
+                Type: { type: String, enum: ["بشر", "تكعيب"] },
+                isTransparent: { type : Boolean },
+                coilNumber: { type: Number },
+                price: { type: Number }
+            },
             required: true,
-            enum: ["بشر", "تكعيب"]
+            
         },
 
         typeOfPrint: {

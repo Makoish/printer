@@ -11,6 +11,7 @@ router.get("/admin/processes", auth.adminAuth, ProcessController.getAllProcesses
 router.get("/staff/processes", auth.staffAuth, ProcessController.getAllProcessesStaff)
 router.get("/:id", auth.staffAuth, ProcessController.getProcess)
 router.delete("/:id", auth.adminAuth, ProcessController.deleteProcess)
+// router.delete("/", auth.adminAuth, ProcessController.removeProcesses)
 
 
 
