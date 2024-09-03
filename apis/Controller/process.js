@@ -127,7 +127,12 @@ exports.getAllProcesses = async (req, res) => {
         }
 
       
-        const operations = await Process.find(query).populate({"path": "customer", "select": "phoneNO fullName"}).populate({"path": "staff", "select": "fullName"}).select("-__v")
+        const operations = await Process.find(query).populate({"path": "customer", "select": "phoneNO fullName"}).populate({"path": "staff", "select": "fullName"}).select("-__v").sort({
+            endedAt: 1,  // Puts documents without 'endedAt' field first
+            startedAt: -1,  // Sorts by 'createdAt' for documents without 'endedAt'
+            
+          })
+        
         
         const operationsClone = operations.map(order => {
             const orderObject = order.toObject();
@@ -175,7 +180,7 @@ exports.getAllProcessesStaff = async (req, res) => {
         query.status = "RUNNING"
 
        
-        const operations = await Process.find(query).populate({"path": "customer", "select": "phoneNO fullName"}).populate({"path": "staff", "select": "fullName"}).select("-__v")
+        const operations = await Process.find(query).populate({"path": "customer", "select": "phoneNO fullName"}).populate({"path": "staff", "select": "fullName"}).select("-__v").sort({"createAt": -1});
         const operationsClone = operations.map(order => {
             const orderObject = order.toObject();
             return orderObject;
