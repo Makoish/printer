@@ -32,7 +32,8 @@ exports.addProcess = async (req, res) =>{
         const operation = await Process.create(req.body);
         const PrintingType2Number = {"single": 1, "double": 2};
         
-        const papersCount = Math.ceil(( req.body.papersPerUnit * req.body.unitsNO ) / PrintingType2Number[req.body.typeOfPrint]);
+        let papersCount = Math.ceil( req.body.papersPerUnit / PrintingType2Number[req.body.typeOfPrint]);
+        papersCount *= req.body.unitsNO;
         
         operation.paidPrice = parseInt(papersCount * req.body.pricePerPaper + req.body.unitsNO * req.body.costOfClosure);
         
