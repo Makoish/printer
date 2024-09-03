@@ -50,14 +50,14 @@ exports.dashboard = async (req, res) => {
         
         for (let i = 0; i<operations.length; i++){
             if (operations[i].status == "FINISHED")
-                totalProfit+=operations[i].profit; 
+                totalProfit+=operations[i].paidPrice; 
         }
     
 
     
         for (let i = 0; i<operations.length; i++){
             if (operations[i].status == "FINISHED" && operations[i].startedAt.getMonth() == month){
-                monthProfit+= operations[i].profit;
+                monthProfit+= operations[i].paidPrice;
             }
         }
     
@@ -65,7 +65,7 @@ exports.dashboard = async (req, res) => {
         for (let i = 0; i<operations.length; i++){
           
             if (operations[i].status == "FINISHED" && operations[i].startedAt.getDate() == day)
-                dayProfit+= operations[i].profit
+                dayProfit+= operations[i].paidPrice
         }
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,11 +77,11 @@ exports.dashboard = async (req, res) => {
         for (let i = 0; i<operations.length; i++){
             if (operations[i].status == "FINISHED"){
                 if (monthMap[operations[i].startedAt.getMonth()] in monthesBarCharts){ 
-                    monthesBarCharts[monthMap[operations[i].startedAt.getMonth()]] += operations[i].profit
+                    monthesBarCharts[monthMap[operations[i].startedAt.getMonth()]] += operations[i].paidPrice
                     monthesBarChartPapers[monthMap[operations[i].startedAt.getMonth()]] += operations[i].papersPerUnit * operations[i].unitsNO
                 }
                 else{
-                    monthesBarCharts[monthMap[operations[i].startedAt.getMonth()]] = operations[i].profit
+                    monthesBarCharts[monthMap[operations[i].startedAt.getMonth()]] = operations[i].paidPrice
                     monthesBarChartPapers[monthMap[operations[i].startedAt.getMonth()]] = operations[i].papersPerUnit * operations[i].unitsNO
                 }
 
@@ -90,7 +90,7 @@ exports.dashboard = async (req, res) => {
 
        
         
-        barCharts.push({"monthlyProfit": monthesBarCharts})
+        barCharts.push({"monthlyPrices": monthesBarCharts})
         barCharts.push({"monthlyUsedPapers": monthesBarChartPapers})
         
 
