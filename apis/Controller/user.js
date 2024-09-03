@@ -99,21 +99,55 @@ exports.dashboard = async (req, res) => {
             {
                 $group: {
                     _id: "$customer",
-                    totalProfit: { $sum: "$profit" }
+                    paidPrice: { $sum: "$profit" }
                 }
             },
             {
                 $project: {
                     _id: 0, 
                     customer: "$_id", 
-                    totalProfit: 1 
+                    paidPrice: 1
+
                 }
             },
 
             {
-                $sort: { totalProfit: -1 } 
+                $sort: { paidPrice: -1 } 
             }
         ]).limit(3);
+
+
+
+        const topThreeStaff = await Process.aggregate([
+
+            {
+                $group: {
+                    _id: "$staff",
+                    count: { $count: {} }
+                }
+            },
+
+            {
+                $project: {
+                    _id: 0, 
+                    staff: "$_id", 
+                    count: 1
+                }
+            },
+            
+
+            {
+                $sort: { count: -1 } 
+            }
+        ]).limit(3);
+
+        for (let i = 0; i<topThreeStaff.length; i++){
+            const user = await User.findById(topThreeStaff[i].staff)
+            topThreeStaff[i].staff = user.fullName
+        }
+
+
+        barCharts.push({"top3Staff": topThreeStaff})
 
 
 
