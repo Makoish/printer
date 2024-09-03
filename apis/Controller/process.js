@@ -128,8 +128,9 @@ exports.getAllProcesses = async (req, res) => {
 
       
         const operations = await Process.find(query).populate({"path": "customer", "select": "phoneNO fullName"}).populate({"path": "staff", "select": "fullName"}).select("-__v").sort({
-            endedAt: 1,  // Puts documents without 'endedAt' field first
-            startedAt: -1,  // Sorts by 'createdAt' for documents without 'endedAt'
+            startedAt: -1,  
+            endedAt: -1,  // Puts documents without 'endedAt' field first
+          // Sorts by 'createdAt' for documents without 'endedAt'
             
           })
         
