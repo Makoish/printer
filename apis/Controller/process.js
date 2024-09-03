@@ -38,12 +38,14 @@ exports.addProcess = async (req, res) =>{
         
         const inkPricePerPaper = (req.body.typeOfPrint === "single") ? Number(process.env.OneFaceInkPrice) : Number(process.env.DoubleFaceInkPrice)
         
-        let closureCost = 0;
+        let closureCost = 0.0;
         let transparentExtra = 0;
         
 
         if ( req.body.typeOfClosure.Type == 'بشر')
-            closureCost += req.body.unitsNO * Number(process.env.bashrPricePerUnit);
+            closureCost = req.body.unitsNO * Number(process.env.bashrPricePerUnit);
+           
+        
             
         
         else{
@@ -54,9 +56,9 @@ exports.addProcess = async (req, res) =>{
         }
             
         
-
+        
+        
         operation.totalPrintingCost =  parseInt(papersCount *  ( Number(process.env.pricePerPaperActual) + inkPricePerPaper) + closureCost);
-        console.log(operation.totalPrintingCost)
         operation.profit = operation.paidPrice - operation.totalPrintingCost
         operation.papersCount = papersCount
         const rate = req.body.typeOfPrint === "single" ? Number(process.env.OneFaceRate) : Number(process.env.DoubleFaceRate)
@@ -250,22 +252,22 @@ exports.deleteProcess = async (req, res) => {
 
 
 
-// exports.removeProcesses = async (req, res) => {
-//     try {
-//         await Process.deleteMany({
-//             $and: [
-//               { staff: "66b8efbad11597a815960016" },
-//               { customer: "66b8efbad11597a815960016" }
-//             ]
-//           });
+exports.removeProcesses = async (req, res) => {
+    try {
+        await Process.deleteMany({
+            $and: [
+              { staff: "66b8efbad11597a815960016" },
+              { customer: "66b8efbad11597a815960016" }
+            ]
+          });
 
         
 
 
 
 
-//         return res.status(200).json({"message": "Process Deleted"})
-//     } catch (err) {
-//         res.status(400).json({"message": err.message})
-//     }
-// };
+        return res.status(200).json({"message": "Process Deleted"})
+    } catch (err) {
+        res.status(400).json({"message": err.message})
+    }
+};
