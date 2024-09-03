@@ -26,13 +26,14 @@ exports.userAuth = async (req, res, next) => {
 
 
     res.locals.id = decoded_token.id; // pass the userID to the next function/middleware
-    next();
+    
+    
 
     
 
     }
     catch(err){
-        res.status(400).json({"message": err.message});
+        next(err)   
     }
     
 };
